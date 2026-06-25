@@ -1,0 +1,58 @@
+---
+import FormattedDate from "@/components/FormattedDate.astro";
+import Rating from "@/components/music/Rating.astro";
+import SpotifyEmbed from "@/components/music/SpotifyEmbed.astro";
+import { FEATURED_PLAYLISTS, getAllReviews } from "@/data/music";
+import PageLayout from "@/layouts/Base.astro";
+import { collectionDateSort } from "@/utils/date";
+
+const reviews = (await getAllReviews()).sort(collectionDateSort);
+
+const meta = {
+	description: "Playlists I'm into and short reviews of what I've been listening to.",
+	title: "Music",
+};
+---
+
+<PageLayout meta={meta}>
+	<h1 class="title mb-12">Music</h1>
+	{
+		FEATURED_PLAYLISTS.length > 0 && (
+			<section class="mb-16">
+				<h2 class="title mb-6 text-xl">Playlists</h2>
+				<div class="grid gap-4 sm:grid-cols-2">
+					{FEATURED_PLAYLISTS.map((playlist) => (
+						<SpotifyEmbed title={playlist.title} url={playlist.url} />
+					))}
+				</div>
+			</section>
+		)
+	}
+	<section>
+		<h2 class="title mb-6 text-xl">Reviews</h2>
+		{
+			reviews.length === 0 ? (
+				<p class="text-muted">No reviews yet.</p>
+			) : (
+				<ul class="space-y-4" role="list">
+					{reviews.map((review) => (
+						<li class="grid gap-1 sm:grid-cols-[auto_1fr]">
+							<FormattedDate
+								class="text-muted min-w-30 font-semibold"
+								date={review.data.publishDate}
+							/>
+							<div>
+								{review.data.draft && <span class="text-red-500">(Draft) </span>}
+								<a class="cactus-link" href={`/music/${review.id}/`}>
+									{review.data.title}
+								</a>
+								<span class="text-muted"> — {review.data.artist}</span>
+								<Rating class="ms-2 align-middle" rating={review.data.rating} />
+							</div>
+						</li>
+					))}
+				</ul>
+			)
+		}
+	</section>
+</PageLayout>

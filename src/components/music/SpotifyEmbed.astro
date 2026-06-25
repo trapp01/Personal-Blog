@@ -1,0 +1,49 @@
+---
+interface Props {
+	url?: string;
+	type?: "track" | "album" | "playlist" | "artist" | "episode" | "show";
+	id?: string;
+	compact?: boolean;
+	title?: string;
+	theme?: "0" | "1";
+}
+
+const { compact = false, id, theme, title = "Spotify player", type, url } = Astro.props;
+
+let embedType = type;
+let embedId = id;
+
+// Pull {type}/{id} out of a share URL like https://open.spotify.com/album/<id>?si=...
+// Tolerates an optional locale segment (e.g. /intl-de/) and strips the query string.
+if (url && (!embedType || !embedId)) {
+	const match = url.match(
+		/open\.spotify\.com\/(?:[a-z-]+\/)?(track|album|playlist|artist|episode|show)\/([A-Za-z0-9]+)/,
+	);
+	if (match) {
+		embedType = match[1] as NonNullable<Props["type"]>;
+		embedId = match[2];
+	}
+}
+
+const height = compact ? 152 : 352;
+const src =
+	embedType && embedId
+		? `https://open.spotify.com/embed/${embedType}/${embedId}${theme ? `?theme=${theme}` : ""}`
+		: null;
+---
+
+{
+	src ? (
+		<iframe
+			allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+			class="rounded-xl border-0"
+			height={height}
+			loading="lazy"
+			src={src}
+			title={title}
+			width="100%"
+		/>
+	) : (
+		import.meta.env.DEV && <p class="text-muted text-sm">Invalid Spotify URL: {url}</p>
+	)
+}

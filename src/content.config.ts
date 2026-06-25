@@ -48,6 +48,28 @@ const note = defineCollection({
 	}),
 });
 
+const music = defineCollection({
+	loader: glob({ base: "./src/content/music", pattern: "**/*.{md,mdx}" }),
+	schema: ({ image }) =>
+		baseSchema.extend({
+			artist: z.string(),
+			rating: z.number().min(0).max(5).multipleOf(0.5),
+			description: z.string().optional(),
+			coverImage: z
+				.object({
+					alt: z.string(),
+					src: image(),
+				})
+				.optional(),
+			spotifyUrl: z.url().optional(),
+			draft: z.boolean().default(false),
+			publishDate: z
+				.string()
+				.or(z.date())
+				.transform((val) => new Date(val)),
+		}),
+});
+
 const tag = defineCollection({
 	loader: glob({ base: "./src/content/tag", pattern: "**/*.{md,mdx}" }),
 	schema: z.object({
@@ -56,4 +78,4 @@ const tag = defineCollection({
 	}),
 });
 
-export const collections = { post, note, tag };
+export const collections = { post, note, tag, music };

@@ -1,0 +1,29 @@
+---
+import { Icon } from "astro-icon/components";
+
+interface Props {
+	rating: number; // 0–5, in 0.5 steps
+	class?: string;
+}
+
+const { class: className, rating } = Astro.props;
+
+const full = Math.floor(rating);
+const hasHalf = rating - full >= 0.5;
+const empty = 5 - full - (hasHalf ? 1 : 0);
+const label = `Rated ${rating} out of 5`;
+---
+
+<span class:list={["inline-flex items-center gap-0.5", className]} role="img" aria-label={label}>
+	{
+		Array.from({ length: full }).map(() => (
+			<Icon aria-hidden="true" class="h-4 w-4" name="mdi:star" />
+		))
+	}
+	{hasHalf && <Icon aria-hidden="true" class="h-4 w-4" name="mdi:star-half-full" />}
+	{
+		Array.from({ length: empty }).map(() => (
+			<Icon aria-hidden="true" class="text-muted h-4 w-4" name="mdi:star-outline" />
+		))
+	}
+</span>
