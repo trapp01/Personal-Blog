@@ -1,63 +1,54 @@
-# Astro Starter Kit: Blog
+# matt-trapp
 
-```sh
-npm create astro@latest -- --template blog
+The source for my personal site — writing and notes. Built with [Astro](https://astro.build)
+on top of the [Astro Cactus](https://github.com/chrismwilliams/astro-cactus) theme.
+
+## Stack
+
+- **Astro v6** — static site generation
+- **Tailwind v4** — styling, with light/dark mode
+- **MD/MDX** content collections for posts, notes, and tags
+- **Pagefind** static search, **Satori** for OG images, RSS, sitemap, webmentions
+
+## Commands
+
+| Command           | Action                                            |
+| :---------------- | :------------------------------------------------ |
+| `npm install`     | Install dependencies                              |
+| `npm run dev`     | Start the dev server at `localhost:3000`          |
+| `npm run build`   | Build to `./dist/` (runs Pagefind afterwards)     |
+| `npm run preview` | Preview the production build locally              |
+| `npm run check`   | Type-check (`astro check`) and lint (`biome`)     |
+| `npm run lint`    | Lint and auto-fix with Biome                      |
+| `npm run format`  | Format with Prettier                              |
+
+## Structure
+
+- `src/content/post/` — long-form writing (`.md` / `.mdx`)
+- `src/content/note/` — short notes
+- `src/content/tag/` — optional per-tag page overrides
+- `src/site.config.ts` — site title, URL, nav, date format
+- `src/components/SocialList.astro` — social links
+- `src/pages/index.astro` — the homepage (year-grouped writing index)
+
+## Writing a post
+
+Add a Markdown file to `src/content/post/`. The filename becomes the slug.
+
+```md
+---
+title: My post title
+description: A short summary used for SEO and previews.
+publishDate: "2026-06-24"
+tags: ["example"]
+---
+
+Your content here.
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+Notes use the same idea in `src/content/note/`, with an ISO 8601 `publishDate`
+(e.g. `"2026-06-24T12:00:00Z"`).
 
-Features:
+## Credits
 
-- ✅ Minimal styling (make it your own!)
-- ✅ 100/100 Lighthouse performance
-- ✅ SEO-friendly with canonical URLs and Open Graph data
-- ✅ Sitemap support
-- ✅ RSS Feed support
-- ✅ Markdown & MDX support
-
-## 🚀 Project Structure
-
-Inside of your Astro project, you'll see the following folders and files:
-
-```text
-├── public/
-├── src/
-│   ├── assets/
-│   ├── components/
-│   ├── content/
-│   ├── layouts/
-│   └── pages/
-├── astro.config.mjs
-├── README.md
-├── package.json
-└── tsconfig.json
-```
-
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
-
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
-
-The `src/content/` directory contains "collections" of related Markdown and MDX documents. Use `getCollection()` to retrieve posts from `src/content/blog/`, and type-check your frontmatter using an optional schema. See [Astro's Content Collections docs](https://docs.astro.build/en/guides/content-collections/) to learn more.
-
-Any static assets, like images, can be placed in the `public/` directory.
-
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Check out [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
-
-## Credit
-
-This theme is based off of the lovely [Bear Blog](https://github.com/HermanMartinus/bearblog/).
+Based on [Astro Cactus](https://github.com/chrismwilliams/astro-cactus) by Chris Williams (MIT).
