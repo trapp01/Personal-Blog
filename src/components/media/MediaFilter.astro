@@ -1,0 +1,87 @@
+---
+import { MEDIA_TYPES, type MediaType } from "@/data/media";
+
+interface Props {
+	types: MediaType[]; // type chips to show — typically the types actually present
+}
+
+const { types } = Astro.props;
+
+const chipClass =
+	"border-global-text/15 hover:border-accent aria-pressed:bg-accent aria-pressed:text-global-bg aria-pressed:border-accent cursor-pointer rounded-full border px-3 py-1 text-sm font-semibold transition-colors";
+---
+
+<media-filter>
+	<div class="mb-6 flex flex-wrap items-center gap-x-4 gap-y-3">
+		<div class="flex flex-wrap gap-2" role="group" aria-label="Filter by type">
+			<button type="button" data-filter="all" aria-pressed="true" class={chipClass}>All</button>
+			{
+				types.map((t) => (
+					<button type="button" data-filter={t} aria-pressed="false" class={chipClass}>
+						{MEDIA_TYPES[t].label}
+					</button>
+				))
+			}
+		</div>
+		<label class="text-muted ms-auto flex items-center gap-2 text-sm">
+			Sort
+			<select
+				data-sort-control
+				class="border-global-text/15 bg-global-bg cursor-pointer rounded border px-2 py-1"
+			>
+				<option value="recent">Recent</option>
+				<option value="rating">Top rated</option>
+			</select>
+		</label>
+	</div>
+	<div
+		class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4"
+		data-media-grid
+		role="list"
+	>
+		<slot />
+	</div>
+</media-filter>
+
+<script>
+	class MediaFilter extends HTMLElement {
+		connectedCallback() {
+			const grid = this.querySelector<HTMLElement>("[data-media-grid]");
+			if (!grid) return;
+			const chips = Array.from(this.querySelectorAll<HTMLButtonElement>("[data-filter]"));
+			const sortControl = this.querySelector<HTMLSelectElement>("[data-sort-control]");
+			const cards = Array.from(grid.querySelectorAll<HTMLElement>(".media-card"));
+
+			let activeType = "all";
+
+			const applyFilter = () => {
+				for (const card of cards) {
+					card.hidden = !(activeType === "all" || card.dataset.type === activeType);
+				}
+			};
+
+			const applySort = (mode: string) => {
+				const sorted = [...cards].sort((a, b) => {
+					if (mode === "rating") {
+						const byRating = Number(b.dataset.rating) - Number(a.dataset.rating);
+						if (byRating !== 0) return byRating;
+					}
+					return Number(b.dataset.date) - Number(a.dataset.date);
+				});
+				for (const card of sorted) grid.append(card); // re-append in order, preserves hidden state
+			};
+
+			for (const chip of chips) {
+				chip.addEventListener("click", () => {
+					activeType = chip.dataset.filter ?? "all";
+					for (const c of chips) c.setAttribute("aria-pressed", String(c === chip));
+					applyFilter();
+				});
+			}
+
+			sortControl?.addEventListener("change", () => applySort(sortControl.value));
+		}
+	}
+
+	customElements.define("media-filter", MediaFilter);
+</script>

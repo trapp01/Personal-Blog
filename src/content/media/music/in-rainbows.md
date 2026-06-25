@@ -1,9 +1,13 @@
 ---
 title: In Rainbows
-artist: Radiohead
+type: music
+creator: Radiohead
 rating: 5
+status: now
 publishDate: "2026-06-20"
 description: A few quick thoughts on returning to In Rainbows.
+releaseYear: 2007
+tags: ["rock", "electronic"]
 # To embed the album or a track, uncomment this and paste a Spotify share link:
 # spotifyUrl: "https://open.spotify.com/album/<id>"
 ---

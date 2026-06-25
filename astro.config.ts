@@ -22,6 +22,10 @@ import { expressiveCodeOptions, siteConfig } from "./src/site.config";
 // https://astro.build/config
 export default defineConfig({
 	site: siteConfig.url,
+	// The music page was folded into the unified /shelf/ hub.
+	redirects: {
+		"/music": "/shelf/",
+	},
 	image: {
 		domains: ["webmention.io"],
 	},

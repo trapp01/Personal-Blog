@@ -22,26 +22,29 @@ export function groupPostsByYear(posts: CollectionEntry<"post">[]) {
 	return Object.groupBy(posts, (post) => post.data.publishDate.getFullYear().toString());
 }
 
-/** returns all tags created from posts (inc duplicate tags)
- *  Note: This function doesn't filter draft posts, pass it the result of getAllPosts above to do so.
+/** Anything that carries a `tags` array — posts and media both qualify. */
+export type Taggable = CollectionEntry<"post"> | CollectionEntry<"media">;
+
+/** returns all tags across the given entries (inc duplicate tags)
+ *  Note: This function doesn't filter drafts, pass it the result of getAllPosts/getAllMedia to do so.
  *  */
-export function getAllTags(posts: CollectionEntry<"post">[]) {
-	return posts.flatMap((post) => [...post.data.tags]);
+export function getAllTags(entries: Taggable[]) {
+	return entries.flatMap((entry) => [...entry.data.tags]);
 }
 
-/** returns all unique tags created from posts
- *  Note: This function doesn't filter draft posts, pass it the result of getAllPosts above to do so.
+/** returns all unique tags across the given entries
+ *  Note: This function doesn't filter drafts, pass it the result of getAllPosts/getAllMedia to do so.
  *  */
-export function getUniqueTags(posts: CollectionEntry<"post">[]) {
-	return [...new Set(getAllTags(posts))];
+export function getUniqueTags(entries: Taggable[]) {
+	return [...new Set(getAllTags(entries))];
 }
 
 /** returns a count of each unique tag - [[tagName, count], ...]
- *  Note: This function doesn't filter draft posts, pass it the result of getAllPosts above to do so.
+ *  Note: This function doesn't filter drafts, pass it the result of getAllPosts/getAllMedia to do so.
  *  */
-export function getUniqueTagsWithCount(posts: CollectionEntry<"post">[]): [string, number][] {
+export function getUniqueTagsWithCount(entries: Taggable[]): [string, number][] {
 	return [
-		...getAllTags(posts).reduce(
+		...getAllTags(entries).reduce(
 			(acc, t) => acc.set(t, (acc.get(t) ?? 0) + 1),
 			new Map<string, number>(),
 		),

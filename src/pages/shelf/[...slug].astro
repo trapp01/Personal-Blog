@@ -1,0 +1,92 @@
+---
+import { Image } from "astro:assets";
+import { render } from "astro:content";
+import type { GetStaticPaths, InferGetStaticPropsType } from "astro";
+import FormattedDate from "@/components/FormattedDate.astro";
+import Rating from "@/components/media/Rating.astro";
+import SpotifyEmbed from "@/components/media/SpotifyEmbed.astro";
+import { getAllMedia, MEDIA_TYPES, type MediaType } from "@/data/media";
+import PageLayout from "@/layouts/Base.astro";
+
+export const getStaticPaths = (async () => {
+	const media = await getAllMedia();
+	return media.map((item) => ({
+		params: { slug: item.id },
+		props: { item },
+	}));
+}) satisfies GetStaticPaths;
+
+type Props = InferGetStaticPropsType<typeof getStaticPaths>;
+
+const { item } = Astro.props;
+const { Content } = await render(item);
+const {
+	type,
+	coverImage,
+	creator,
+	description,
+	link,
+	publishDate,
+	rating,
+	releaseYear,
+	spotifyUrl,
+	title,
+} = item.data;
+
+const meta = {
+	description: description ?? `My take on ${title} by ${creator}`,
+	title,
+};
+
+const dateTimeOptions: Intl.DateTimeFormatOptions = { month: "long" };
+
+// Label for the external link shown when there's no Spotify embed.
+const linkVerb: Record<MediaType, string> = {
+	music: "Listen",
+	movie: "Watch",
+	show: "Watch",
+	game: "Play",
+	book: "View",
+};
+---
+
+<PageLayout meta={meta}>
+	<article class="grow break-words" data-pagefind-body>
+		{
+			coverImage && (
+				<div class="mb-6 aspect-square max-w-xs">
+					<Image alt={coverImage.alt} height={320} src={coverImage.src} width={320} />
+				</div>
+			)
+		}
+		<h1 class="title">{title}</h1>
+		<p class="text-muted mt-1 text-lg">
+			{creator}{releaseYear && ` (${releaseYear})`}
+		</p>
+		<div class="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1">
+			<span class="text-muted text-xs font-semibold tracking-wide uppercase">
+				{MEDIA_TYPES[type].label}
+			</span>
+			<Rating rating={rating} />
+			<FormattedDate class="font-semibold" date={publishDate} dateTimeOptions={dateTimeOptions} />
+		</div>
+		{
+			type === "music" && spotifyUrl ? (
+				<div class="mt-6">
+					<SpotifyEmbed title={`${title} by ${creator}`} url={spotifyUrl} />
+				</div>
+			) : (
+				link && (
+					<p class="mt-6">
+						<a class="cactus-link" href={link} target="_blank" rel="noreferrer">
+							{linkVerb[type]} →
+						</a>
+					</p>
+				)
+			)
+		}
+		<div class="prose prose-sm prose-cactus mt-8 max-w-none">
+			<Content />
+		</div>
+	</article>
+</PageLayout>

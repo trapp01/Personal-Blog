@@ -48,12 +48,15 @@ const note = defineCollection({
 	}),
 });
 
-const music = defineCollection({
-	loader: glob({ base: "./src/content/music", pattern: "**/*.{md,mdx}" }),
+const media = defineCollection({
+	loader: glob({ base: "./src/content/media", pattern: "**/*.{md,mdx}" }),
 	schema: ({ image }) =>
 		baseSchema.extend({
-			artist: z.string(),
+			// shared across every media type
+			type: z.enum(["music", "movie", "show", "game", "book"]),
+			creator: z.string(), // artist / director / author / studio
 			rating: z.number().min(0).max(5).multipleOf(0.5),
+			status: z.enum(["now", "finished", "backlog"]).default("finished"),
 			description: z.string().optional(),
 			coverImage: z
 				.object({
@@ -61,12 +64,16 @@ const music = defineCollection({
 					src: image(),
 				})
 				.optional(),
-			spotifyUrl: z.url().optional(),
-			draft: z.boolean().default(false),
+			tags: z.array(z.string()).default([]).transform(removeDupsAndLowerCase),
 			publishDate: z
 				.string()
 				.or(z.date())
-				.transform((val) => new Date(val)),
+				.transform((val) => new Date(val)), // when I logged it
+			draft: z.boolean().default(false),
+			// type-specific, all optional
+			releaseYear: z.number().int().optional(), // the work's own year — display only
+			spotifyUrl: z.url().optional(), // music only
+			link: z.url().optional(), // generic external link (IMDb / Steam / etc.)
 		}),
 });
 
@@ -78,4 +85,4 @@ const tag = defineCollection({
 	}),
 });
 
-export const collections = { post, note, tag, music };
+export const collections = { post, note, tag, media };

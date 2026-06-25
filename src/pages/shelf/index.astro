@@ -1,0 +1,76 @@
+---
+import MediaCard from "@/components/media/MediaCard.astro";
+import MediaFilter from "@/components/media/MediaFilter.astro";
+import {
+	getAllMedia,
+	getNowItems,
+	getYearInMedia,
+	MEDIA_TYPE_ORDER,
+	MEDIA_TYPES,
+} from "@/data/media";
+import PageLayout from "@/layouts/Base.astro";
+import { collectionDateSort } from "@/utils/date";
+
+const media = (await getAllMedia()).sort(collectionDateSort);
+const nowItems = getNowItems(media);
+const stats = getYearInMedia(media);
+
+// types actually present, in canonical order — drives the filter chips
+const presentTypes = MEDIA_TYPE_ORDER.filter((t) => media.some((m) => m.data.type === t));
+
+// stats strip pieces, e.g. "1 album", "14 films"
+const statParts = MEDIA_TYPE_ORDER.filter((t) => (stats.byType[t] ?? 0) > 0).map((t) => {
+	const n = stats.byType[t] ?? 0;
+	const noun = n === 1 ? MEDIA_TYPES[t].plural.slice(0, -1) : MEDIA_TYPES[t].plural;
+	return `${n} ${noun}`;
+});
+
+const meta = {
+	description: "Music, films, shows, games and books I've been into — all in one place.",
+	title: "Shelf",
+};
+---
+
+<PageLayout meta={meta}>
+	<h1 class="title mb-3">Shelf</h1>
+	<p class="text-muted mb-10">
+		Music, films, shows, games and books I've been into — all in one place. Also see my{" "}
+		<a class="cactus-link" href="/playlists/">playlists</a>.
+	</p>
+
+	{
+		nowItems.length > 0 && (
+			<section class="mb-12">
+				<h2 class="title mb-4 text-xl">Now</h2>
+				<div class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4" role="list">
+					{nowItems.map((item) => (
+						<MediaCard item={item} />
+					))}
+				</div>
+			</section>
+		)
+	}
+
+	{
+		statParts.length > 0 && (
+			<p class="text-muted mb-10 text-sm">
+				<span class="text-accent-2 font-semibold">{stats.year}:</span> {statParts.join(" · ")}
+			</p>
+		)
+	}
+
+	<section>
+		<h2 class="title mb-6 text-xl">Everything</h2>
+		{
+			media.length === 0 ? (
+				<p class="text-muted">Nothing on the shelf yet.</p>
+			) : (
+				<MediaFilter types={presentTypes}>
+					{media.map((item) => (
+						<MediaCard item={item} />
+					))}
+				</MediaFilter>
+			)
+		}
+	</section>
+</PageLayout>
