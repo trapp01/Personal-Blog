@@ -33,10 +33,11 @@ export const menuLinks: { path: string; title: string }[] = [
 		path: "/posts/",
 		title: "Writing",
 	},
-	{
-		path: "/notes/",
-		title: "Notes",
-	},
+	// Notes disabled for now — uncomment to restore (also rename src/pages/_notes -> notes).
+	// {
+	// 	path: "/notes/",
+	// 	title: "Notes",
+	// },
 	{
 		path: "/shelf/",
 		title: "Shelf",

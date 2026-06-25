@@ -1,7 +1,7 @@
 ---
-import { type CollectionEntry, getCollection } from "astro:content";
+import type { CollectionEntry } from "astro:content";
 import PostPreview from "@/components/blog/PostPreview.astro";
-import Note from "@/components/note/Note.astro";
+// import Note from "@/components/note/Note.astro"; // notes disabled — see note below
 import SocialList from "@/components/SocialList.astro";
 import { getAllPosts, groupPostsByYear } from "@/data/post";
 import PageLayout from "@/layouts/Base.astro";
@@ -13,12 +13,14 @@ const allPostsByDate = allPosts.sort(collectionDateSort) as CollectionEntry<"pos
 const postsByYear = groupPostsByYear(allPostsByDate);
 const descYearKeys = Object.keys(postsByYear).sort((a, b) => +b - +a);
 
-// Latest notes, set to a max of 5.
-const MAX_NOTES = 5;
-const allNotes = await getCollection("note");
-const latestNotes = allNotes
-	.sort(collectionDateSort)
-	.slice(0, MAX_NOTES) as CollectionEntry<"note">[];
+// Notes disabled for now. To re-enable: restore the getCollection + Note imports above,
+// uncomment this block and the Notes <section> below, restore the nav link in
+// site.config.ts and the RSS <link> in BaseHead.astro, and rename src/pages/_notes -> notes.
+// const MAX_NOTES = 5;
+// const allNotes = await getCollection("note");
+// const latestNotes = allNotes
+// 	.sort(collectionDateSort)
+// 	.slice(0, MAX_NOTES) as CollectionEntry<"note">[];
 ---
 
 <PageLayout meta={{ title: "Home" }}>
@@ -50,6 +52,7 @@ const latestNotes = allNotes
 		}
 	</section>
 	{
+		/* Notes disabled for now — see the re-enable note in the frontmatter above.
 		latestNotes.length > 0 && (
 			<section class="mt-4">
 				<h2 class="title text-accent mb-6 text-xl">
@@ -64,5 +67,6 @@ const latestNotes = allNotes
 				</ul>
 			</section>
 		)
+		*/
 	}
 </PageLayout>
