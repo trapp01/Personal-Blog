@@ -7,7 +7,7 @@ const [allPosts, allMedia] = await Promise.all([getAllPosts(), getAllMedia()]);
 const allTags = getUniqueTagsWithCount([...allPosts, ...allMedia]);
 
 const meta = {
-	description: "A list of all the topics across my posts and shelf",
+	description: "A list of all the topics across my posts and reviews",
 	title: "All Tags",
 };
 ---

@@ -25,7 +25,7 @@ const height = Math.round(width / shape.ratio);
 	data-rating={rating}
 >
 	{/* grow + justify-end sits the cover on the row's baseline, so titles line up across shapes */}
-	<a class="flex grow flex-col justify-end" href={`/shelf/${item.id}/`}>
+	<a class="flex grow flex-col justify-end" href={`/reviews/${item.id}/`}>
 		<div
 			class:list={[
 				"bg-global-text/5 relative mb-2 shrink-0 overflow-hidden rounded-lg",

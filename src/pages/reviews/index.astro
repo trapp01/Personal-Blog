@@ -26,17 +26,13 @@ const statParts = MEDIA_TYPE_ORDER.filter((t) => (stats.byType[t] ?? 0) > 0).map
 });
 
 const meta = {
-	description: "Music, films, shows, games and books I've been into — all in one place.",
-	title: "Shelf",
+	description: "Music, films, shows, games and books I've been into.",
+	title: "Reviews",
 };
 ---
 
 <PageLayout meta={meta}>
-	<h1 class="title mb-3">Shelf</h1>
-	<p class="text-muted mb-10">
-		Music, films, shows, games and books I've been into — all in one place. Also see my{" "}
-		<a class="cactus-link" href="/playlists/">playlists</a>.
-	</p>
+	<h1 class="title mb-10">Reviews</h1>
 
 	{
 		nowItems.length > 0 && (
@@ -60,10 +56,9 @@ const meta = {
 	}
 
 	<section>
-		<h2 class="title mb-6 text-xl">Everything</h2>
 		{
 			media.length === 0 ? (
-				<p class="text-muted">Nothing on the shelf yet.</p>
+				<p class="text-muted">Nothing here yet.</p>
 			) : (
 				<MediaFilter types={presentTypes}>
 					{media.map((item) => (

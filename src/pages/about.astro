@@ -1,4 +1,5 @@
 ---
+import SocialList from "@/components/SocialList.astro";
 import PageLayout from "@/layouts/Base.astro";
 
 const meta = {
@@ -18,15 +19,6 @@ const meta = {
 			</p>
 			*/
 		}
-		<p>
-			You can find me on <a
-				class="cactus-link inline-block"
-				href="https://github.com/trapp01"
-				rel="noreferrer"
-				target="_blank">GitHub</a
-			>, or reach me by <a class="cactus-link inline-block" href="mailto:matthewtrapp01@gmail.com"
-				>email</a
-			>.
-		</p>
 	</div>
+	<SocialList />
 </PageLayout>
