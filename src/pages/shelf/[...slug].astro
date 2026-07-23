@@ -5,7 +5,7 @@ import type { GetStaticPaths, InferGetStaticPropsType } from "astro";
 import FormattedDate from "@/components/FormattedDate.astro";
 import Rating from "@/components/media/Rating.astro";
 import SpotifyEmbed from "@/components/media/SpotifyEmbed.astro";
-import { getAllMedia, MEDIA_TYPES, type MediaType } from "@/data/media";
+import { getAllMedia, getCoverShape, MEDIA_TYPES, type MediaType } from "@/data/media";
 import PageLayout from "@/layouts/Base.astro";
 
 export const getStaticPaths = (async () => {
@@ -40,6 +40,10 @@ const meta = {
 
 const dateTimeOptions: Intl.DateTimeFormatOptions = { month: "long" };
 
+const shape = getCoverShape(item.data);
+const coverWidth = 400;
+const coverHeight = Math.round(coverWidth / shape.ratio);
+
 // Label for the external link shown when there's no Spotify embed.
 const linkVerb: Record<MediaType, string> = {
 	music: "Listen",
@@ -54,8 +58,14 @@ const linkVerb: Record<MediaType, string> = {
 	<article class="grow break-words" data-pagefind-body>
 		{
 			coverImage && (
-				<div class="mb-6 aspect-square max-w-xs">
-					<Image alt={coverImage.alt} height={320} src={coverImage.src} width={320} />
+				<div class:list={["mb-6 max-w-[15rem] overflow-hidden rounded-lg", shape.aspect]}>
+					<Image
+						alt={coverImage.alt}
+						class="h-full w-full object-cover"
+						height={coverHeight}
+						src={coverImage.src}
+						width={coverWidth}
+					/>
 				</div>
 			)
 		}

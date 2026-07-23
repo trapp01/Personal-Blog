@@ -64,6 +64,8 @@ const media = defineCollection({
 					src: image(),
 				})
 				.optional(),
+			// shape of the cover art — omit to use the default for the type (see DEFAULT_COVER_SHAPE)
+			coverShape: z.enum(["square", "tall", "poster", "wide"]).optional(),
 			tags: z.array(z.string()).default([]).transform(removeDupsAndLowerCase),
 			publishDate: z
 				.string()

@@ -15,6 +15,30 @@ export const MEDIA_TYPES: Record<MediaType, { label: string; plural: string; ico
 /** Order types appear in filter chips and the stats strip. */
 export const MEDIA_TYPE_ORDER: MediaType[] = ["music", "movie", "show", "game", "book"];
 
+export type CoverShape = NonNullable<CollectionEntry<"media">["data"]["coverShape"]>;
+
+/** Cover art shapes an entry can use, set via `coverShape` in frontmatter. */
+export const COVER_SHAPES: Record<CoverShape, { aspect: string; ratio: number }> = {
+	square: { aspect: "aspect-[1/1]", ratio: 1 }, // album art
+	tall: { aspect: "aspect-[4/5]", ratio: 4 / 5 }, // key art, anime covers
+	poster: { aspect: "aspect-[2/3]", ratio: 2 / 3 }, // theatrical posters, game box art, books
+	wide: { aspect: "aspect-[16/9]", ratio: 16 / 9 }, // stills, banners
+};
+
+/** Shape used when an entry doesn't set `coverShape`. */
+const DEFAULT_COVER_SHAPE: Record<MediaType, CoverShape> = {
+	music: "square",
+	movie: "poster",
+	show: "poster",
+	game: "poster",
+	book: "poster",
+};
+
+/** Resolve an entry's cover shape — explicit `coverShape` wins, else the default for its type. */
+export function getCoverShape(data: CollectionEntry<"media">["data"]) {
+	return COVER_SHAPES[data.coverShape ?? DEFAULT_COVER_SHAPE[data.type]];
+}
+
 /** filter out draft entries based on the environment (mirrors getAllPosts) */
 export async function getAllMedia(): Promise<CollectionEntry<"media">[]> {
 	return await getCollection("media", ({ data }) => {
