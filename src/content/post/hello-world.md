@@ -1,8 +1,10 @@
 ---
+# Template post — kept as a draft for reference. Drafts never appear in prod builds or RSS.
 title: Hello, world
 description: The first post on my new site — a quick note on why it exists and what I plan to put here.
 publishDate: "2026-06-24"
 tags: ["meta"]
+draft: true
 ---
 
 This is the first post on my site. I'm starting it as a place to write about what

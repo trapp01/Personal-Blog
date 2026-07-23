@@ -26,10 +26,13 @@ const descYearKeys = Object.keys(postsByYear).sort((a, b) => +b - +a);
 <PageLayout meta={{ title: "Home" }}>
 	<section>
 		<h1 class="title mb-6">Matt Trapp</h1>
-		{/* TODO: replace with your own intro line. */}
-		<p class="mb-6">
-			Welcome — this is my personal site, where I write about what I'm building and learning.
-		</p>
+		{
+			/* TODO(post-launch): write a real intro line, then restore this.
+			<p class="mb-6">
+				Welcome — this is my personal site, where I write about what I'm building and learning.
+			</p>
+			*/
+		}
 		<SocialList />
 	</section>
 	<section aria-label="Writing" class="mt-16">

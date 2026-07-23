@@ -2,8 +2,7 @@ import type { AstroExpressiveCodeOptions } from "astro-expressive-code";
 import type { SiteConfig } from "@/types";
 
 export const siteConfig: SiteConfig = {
-	// TODO: replace with your real domain once you have one (or your GitHub Pages URL).
-	url: "https://trapp01.github.io/matt-trapp/",
+	url: "https://matt-trapp.com",
 	title: "Matt Trapp",
 	author: "Matthew Trapp",
 	description: "The personal site of Matt Trapp — writing and notes.",
