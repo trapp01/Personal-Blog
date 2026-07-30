@@ -7,7 +7,6 @@ status: finished
 publishDate: "2026-07-22"
 description: Overflowing with creativity.
 releaseYear: 1998
-coverShape: tall
 coverImage:
   alt: "Cowboy Bebop poster"
   src: "./cowboy-bebop-poster.jpg"
