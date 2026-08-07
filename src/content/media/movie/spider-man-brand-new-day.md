@@ -2,7 +2,7 @@
 title: "Spider-Man: Brand New Day"
 type: movie
 creator: Destin Daniel Cretton
-rating: 3
+rating: 2.5
 status: finished
 publishDate: "2026-08-07"
 description: I was expecting more with how much hype this one's been getting.
