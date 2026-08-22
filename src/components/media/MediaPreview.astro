@@ -1,0 +1,19 @@
+---
+import type { CollectionEntry } from "astro:content";
+import Rating from "@/components/media/Rating.astro";
+import { MEDIA_TYPES } from "@/data/media";
+
+interface Props {
+	item: CollectionEntry<"media">;
+}
+
+const { item } = Astro.props;
+const { rating, title, type } = item.data;
+---
+
+{/* Two grid children, matching PostPreview, so both home lists share one column. */}
+<span class="text-muted min-w-30 font-semibold">{MEDIA_TYPES[type].label}</span>
+<div class="flex flex-wrap items-center gap-x-2">
+	<a class="cactus-link" href={`/reviews/${item.id}/`}>{title}</a>
+	<Rating rating={rating} />
+</div>
