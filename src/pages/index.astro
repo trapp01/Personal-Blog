@@ -1,22 +1,17 @@
 ---
 import type { CollectionEntry } from "astro:content";
 import PostPreview from "@/components/blog/PostPreview.astro";
-import MediaCard from "@/components/media/MediaCard.astro";
 // import Note from "@/components/note/Note.astro"; // notes disabled — see note below
-import { getAllMedia } from "@/data/media";
 import { getAllPosts } from "@/data/post";
 import PageLayout from "@/layouts/Base.astro";
 import { collectionDateSort } from "@/utils/date";
 
-// Home teases the most recent of each; the section headings link to the full archives.
+// Home teases the most recent posts; the section heading links to the full archive.
 const MAX_POSTS = 5;
-const MAX_REVIEWS = 4;
 
 const latestPosts = (await getAllPosts())
 	.sort(collectionDateSort)
 	.slice(0, MAX_POSTS) as CollectionEntry<"post">[];
-
-const latestReviews = (await getAllMedia()).sort(collectionDateSort).slice(0, MAX_REVIEWS);
 
 // Notes disabled for now. To re-enable: restore the getCollection + Note imports above,
 // uncomment this block and the Notes <section> below, restore the nav link in
@@ -38,7 +33,7 @@ const latestReviews = (await getAllMedia()).sort(collectionDateSort).slice(0, MA
 		*/
 	}
 	<section aria-labelledby="writing-heading">
-		<h2 class="title text-lg" id="writing-heading">
+		<h2 class="title" id="writing-heading">
 			<a class="hover:text-link" href="/posts/">Writing →</a>
 		</h2>
 		<ul class="mt-5 space-y-4 text-start">
@@ -52,29 +47,10 @@ const latestReviews = (await getAllMedia()).sort(collectionDateSort).slice(0, MA
 		</ul>
 	</section>
 	{
-		latestReviews.length > 0 && (
-			<section aria-labelledby="reviews-heading" class="mt-16">
-				<h2 class="title text-lg" id="reviews-heading">
-					<a class="hover:text-link" href="/reviews/">
-						Reviews →
-					</a>
-				</h2>
-				<div
-					class="mt-5 grid grid-cols-2 items-start gap-4 sm:grid-cols-3 lg:grid-cols-4"
-					role="list"
-				>
-					{latestReviews.map((item) => (
-						<MediaCard item={item} />
-					))}
-				</div>
-			</section>
-		)
-	}
-	{
 		/* Notes disabled for now — see the re-enable note in the frontmatter above.
 		latestNotes.length > 0 && (
 			<section class="mt-4">
-				<h2 class="title text-accent mb-6 text-xl">
+				<h2 class="title text-accent mb-6">
 					<a href="/notes/">Notes</a>
 				</h2>
 				<ul class="space-y-6" role="list">
