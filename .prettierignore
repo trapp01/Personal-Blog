@@ -6,3 +6,12 @@ node_modules
 
 pnpm-lock.yaml
 dist
+
+# Biome formats these (see biome.json). Running both fights over trailing
+# commas and array wrapping, and prettier's output fails `npm run check`.
+*.css
+*.json
+*.jsonc
+
+# Machine-local editor state, untracked.
+.claude
