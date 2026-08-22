@@ -5,7 +5,7 @@ export const siteConfig: SiteConfig = {
 	url: "https://matt-trapp.com",
 	title: "Matt Trapp",
 	author: "Matthew Trapp",
-	description: "The personal site of Matt Trapp — writing and notes.",
+	description: "The personal site of Matt Trapp: writing and reviews.",
 	lang: "en-US",
 	ogLocale: "en_US",
 	date: {
