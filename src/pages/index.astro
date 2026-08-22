@@ -31,13 +31,6 @@ const latestReviews = (await getAllMedia()).sort(collectionDateSort).slice(0, MA
 
 <PageLayout meta={{ title: "Home" }}>
 	<h1 class="sr-only">Matt Trapp</h1>
-	{
-		/* TODO(post-launch): write a real intro line, then restore this.
-		<p class="mb-6">
-			Welcome — this is my personal site, where I write about what I'm building and learning.
-		</p>
-		*/
-	}
 	<section aria-labelledby="writing-heading">
 		<h2 class="title" id="writing-heading">
 			<a class="hover:text-link" href="/posts/">Writing →</a>
