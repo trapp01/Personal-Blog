@@ -7,6 +7,9 @@
 		return storedTheme || (lightModePref.matches ? "light" : "dark");
 	}
 
+	// Must match --color-global-bg in src/styles/global.css, or mobile overscroll shows a seam.
+	const themeColors = { light: "#fafafa", dark: "#1d1f20" };
+
 	function setTheme(newTheme) {
 		if (newTheme !== "light" && newTheme !== "dark") {
 			return console.warn(
@@ -22,6 +25,9 @@
 		}
 
 		root.setAttribute("data-theme", newTheme);
+		document
+			.querySelector('meta[name="theme-color"]')
+			?.setAttribute("content", themeColors[newTheme]);
 
 		if (typeof localStorage !== "undefined") {
 			localStorage.setItem("theme", newTheme);
