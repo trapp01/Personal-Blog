@@ -10,16 +10,16 @@
 
 ## 1. Where we are right now
 
-| Item | Status |
-|------|--------|
-| direnv installed + zsh hook in `~/.zshrc` | ✅ Done |
-| `.envrc` in repo root (`AWS_PROFILE=blog`, `AWS_REGION=us-east-1`), gitignored + `direnv allow`ed | ✅ Done |
-| Personal AWS account created | ✅ Done (but **nothing configured inside it yet**) |
-| IAM Identity Center / SSO set up | ❌ Not started |
-| `blog` AWS CLI profile wired | ❌ Not started (profile name reserved in `.envrc`) |
-| Terraform installed locally | ❌ Not installed |
-| Any Terraform / infra code | ❌ Not written |
-| GitHub Actions CI/CD | ❌ Not written |
+| Item                                                                                              | Status                                             |
+| ------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
+| direnv installed + zsh hook in `~/.zshrc`                                                         | ✅ Done                                            |
+| `.envrc` in repo root (`AWS_PROFILE=blog`, `AWS_REGION=us-east-1`), gitignored + `direnv allow`ed | ✅ Done                                            |
+| Personal AWS account created                                                                      | ✅ Done (but **nothing configured inside it yet**) |
+| IAM Identity Center / SSO set up                                                                  | ❌ Not started                                     |
+| `blog` AWS CLI profile wired                                                                      | ❌ Not started (profile name reserved in `.envrc`) |
+| Terraform installed locally                                                                       | ❌ Not installed                                   |
+| Any Terraform / infra code                                                                        | ❌ Not written                                     |
+| GitHub Actions CI/CD                                                                              | ❌ Not written                                     |
 
 **Important account note:** The local AWS CLI `default` and `m.trapp` profiles point at the **work**
 account `442894682013` (region `ca-central-1`). All work for this project must use the **new personal
@@ -36,7 +36,7 @@ doesn't exist until Phase 0 below is complete (so `aws` calls in this folder cur
 - **Hosting architecture:** private **S3** (Origin Access Control) → **CloudFront** → **ACM** cert
   (must be in `us-east-1`) → **Route 53** DNS.
 - **Domain:** purchased via **Cloudflare** (registrar stays Cloudflare). **DNS will move to Route 53**
-  by repointing Cloudflare's nameservers. *(Actual domain name still needs to be provided — see Open Questions.)*
+  by repointing Cloudflare's nameservers. _(Actual domain name still needs to be provided — see Open Questions.)_
 - **CI/CD:** full **keyless** pipeline — GitHub Actions builds on push to `main` and deploys via
   **OIDC assume-role** (no long-lived AWS keys stored in GitHub).
 - **Terraform state:** remote **S3 backend** + lock. (Lock mechanism still open — see Open Questions.)
@@ -70,11 +70,13 @@ doesn't exist until Phase 0 below is complete (so `aws` calls in this folder cur
 **Goal:** get the `blog` profile returning the new account from `aws sts get-caller-identity`.
 
 ### 0.1 Secure the new account (browser, root login)
+
 - Enable **MFA** on the root user.
 - **Billing → Budgets**: create a ~$5/mo cost budget with email alert.
 - Do **not** create root access keys.
 
 ### 0.2 Enable IAM Identity Center (browser)
+
 1. Console → **IAM Identity Center** → **Enable** (accept Organization creation; this account becomes
    the management account). Host it in **us-east-1**.
 2. Identity source: keep default **Identity Center directory**.
@@ -84,6 +86,7 @@ doesn't exist until Phase 0 below is complete (so `aws` calls in this folder cur
 6. Note the **AWS access portal URL** (e.g. `https://d-xxxxxxxxxx.awsapps.com/start`) and the **SSO region** (`us-east-1`).
 
 ### 0.3 Wire the `blog` CLI profile
+
 ```bash
 aws configure sso
 #   SSO session name:        blog
@@ -96,18 +99,22 @@ aws configure sso
 #   Default output format:   json
 #   CLI profile name:        blog
 ```
+
 This writes an `[sso-session blog]` + `[profile blog]` block to `~/.aws/config` (no static keys).
 
 ### 0.4 Verify
+
 ```bash
 aws sso login --profile blog
 cd /Users/mtdt1/Desktop/Projects/Blog/matt-trapp   # direnv sets AWS_PROFILE=blog
 aws sts get-caller-identity                          # must show the NEW account, NOT 442894682013
 ```
+
 > Re-run `aws sso login --profile blog` roughly every 8–12h when the token expires (the accepted
 > tradeoff for short-lived creds).
 
 ### 0.5 Install Terraform
+
 ```bash
 brew install terraform   # or: brew install tfenv && tfenv install latest
 terraform version
@@ -121,14 +128,16 @@ terraform version
 them as a backend. So a tiny `bootstrap/` config (local state) creates them first.
 
 `infra/bootstrap/main.tf` creates:
+
 - S3 bucket for state (versioning on, public access blocked, SSE enabled).
-- DynamoDB lock table (`LockID` hash key) — *or* skip if using S3-native lockfile.
+- DynamoDB lock table (`LockID` hash key) — _or_ skip if using S3-native lockfile.
 
 ```bash
 cd infra/bootstrap
 terraform init
 terraform apply        # creates state bucket + lock table
 ```
+
 Then the main config (Phase 2) uses an S3 backend pointing at that bucket.
 
 ---
@@ -136,6 +145,7 @@ Then the main config (Phase 2) uses an S3 backend pointing at that bucket.
 ## PHASE 2 — Core infrastructure
 
 **Repo layout to create:**
+
 ```
 infra/
   bootstrap/
@@ -154,9 +164,10 @@ infra/
 ```
 
 **Key implementation notes / gotchas:**
+
 - **OAC, not public bucket / not legacy OAI.** Bucket stays fully private; bucket policy grants read
   only to the CloudFront distribution via `AWS:SourceArn`.
-- **Clean URLs:** Astro emits `/posts/slug/index.html`. CloudFront does *not* resolve subdirectory
+- **Clean URLs:** Astro emits `/posts/slug/index.html`. CloudFront does _not_ resolve subdirectory
   index files on its own. The `functions/rewrite.js` CloudFront Function (viewer-request) rewrites:
   URI ends with `/` → append `index.html`; URI has no file extension → append `/index.html`.
 - **Error pages:** CloudFront custom error response maps 403/404 → `/404.html` (Astro `404.astro`).
@@ -165,7 +176,8 @@ infra/
 - **ACM region:** cert resource must use the `us-east-1` provider (single-region plan satisfies this).
 
 **DNS cutover ordering gotcha (important):**
-ACM DNS validation needs the domain *delegated* to the new Route 53 zone first. Sequence:
+ACM DNS validation needs the domain _delegated_ to the new Route 53 zone first. Sequence:
+
 1. `terraform apply -target=aws_route53_zone.this` (create the hosted zone).
 2. Read the 4 nameservers from output → **paste into Cloudflare registrar's nameserver settings**.
 3. Wait for delegation to propagate, then full `terraform apply` (ACM validation + CloudFront now succeed).
@@ -183,6 +195,7 @@ terraform apply
 ## PHASE 3 — GitHub OIDC + CI/CD
 
 `infra/oidc.tf`:
+
 - IAM **OIDC identity provider** for `token.actions.githubusercontent.com`.
 - IAM **deploy role**, trust policy scoped to `repo:trapp01/Personal-Blog:ref:refs/heads/main`
   (or a GitHub Environment). Least-privilege permissions:
@@ -190,9 +203,10 @@ terraform apply
   - `cloudfront:CreateInvalidation` on the distribution.
 
 `.github/workflows/deploy.yml` (on push to `main`):
+
 ```yaml
 permissions:
-  id-token: write      # required for OIDC
+  id-token: write # required for OIDC
   contents: read
 # steps:
 #   - checkout
@@ -232,12 +246,14 @@ permissions:
 ```
 
 ## Cost estimate
+
 - Route 53 hosted zone: **$0.50/mo** (the dominant cost).
 - S3 + CloudFront for a blog: **pennies** (CloudFront free tier covers year 1).
 - ACM: **free**. Domain: already purchased.
 - **Total ≈ $0.50–1.50/mo.**
 
 ## Résumé talking points (what this demonstrates)
+
 - IaC with remote state + state locking; staged applies handling real ordering constraints.
 - Modern S3 access via **OAC**, fully private origin.
 - CDN + edge compute (CloudFront Function for routing), TLS via ACM DNS validation.
@@ -249,6 +265,7 @@ permissions:
 ---
 
 ## Quick-start checklist for next session
+
 - [ ] Provide the domain name.
 - [ ] Decide: DynamoDB lock vs S3-native lockfile.
 - [ ] Phase 0: SSO → `blog` profile → `aws sts get-caller-identity` shows new account; install Terraform.

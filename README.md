@@ -12,15 +12,15 @@ on top of the [Astro Cactus](https://github.com/chrismwilliams/astro-cactus) the
 
 ## Commands
 
-| Command           | Action                                            |
-| :---------------- | :------------------------------------------------ |
-| `npm install`     | Install dependencies                              |
-| `npm run dev`     | Start the dev server at `localhost:3000`          |
-| `npm run build`   | Build to `./dist/` (runs Pagefind afterwards)     |
-| `npm run preview` | Preview the production build locally              |
-| `npm run check`   | Type-check (`astro check`) and lint (`biome`)     |
-| `npm run lint`    | Lint and auto-fix with Biome                      |
-| `npm run format`  | Format with Prettier                              |
+| Command           | Action                                        |
+| :---------------- | :-------------------------------------------- |
+| `npm install`     | Install dependencies                          |
+| `npm run dev`     | Start the dev server at `localhost:3000`      |
+| `npm run build`   | Build to `./dist/` (runs Pagefind afterwards) |
+| `npm run preview` | Preview the production build locally          |
+| `npm run check`   | Type-check (`astro check`) and lint (`biome`) |
+| `npm run lint`    | Lint and auto-fix with Biome                  |
+| `npm run format`  | Format with Prettier                          |
 
 ## Structure
 
