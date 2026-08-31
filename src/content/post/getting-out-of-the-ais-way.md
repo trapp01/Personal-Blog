@@ -16,6 +16,8 @@ Before I built anything I got Claude to go dig up what the research actually say
 
 So tape doesn't predict anything. It reads rules I wrote down in a markdown file, applies them to today, tells me which rule it used, and proposes a trade with a stop and a size already attached to it. I take it or I pass on it. Everything goes into a journal including the passes, and every night the whole thing gets scored against what actually happened. The limits on how much I'm allowed to risk live in the Go code and not in the prompt, because a model can talk itself out of a prompt. Alpaca hands you a hundred grand of paper money, which tells me nothing about how I'd behave with an account I could really afford, so the ledger starts at five thousand and the broker's number gets ignored too.
 
+That loop isn't something I came up with for tape. I've shipped a few forecasters at work that run in production without showing anyone anything, they just quietly write down what they predicted so I can go back later and score it against what actually happened. Then I adjust and let it run again. It's slow, but it's real evidence instead of me guessing, and it's the only way I've found to make something like that actually get better instead of just feeling like it does.
+
 It stays on paper money until it clears a bar I set before I started. And honestly if it never clears that bar I don't really care. I'm doing this without any expectation that it goes anywhere. I could lose constantly and I'd still count it as a success, because at least then I'd know. That's most of why I finally started.
 
 The other one is Daily Games. I'm really inspired by what Capcom did with the RE Engine, and the only game I play every day is the NYT games, so it lands somewhere between those two.
