@@ -3,13 +3,13 @@ title: Homelab
 description: An N100 mini PC running Proxmox and most of the software I use at home.
 status: ongoing
 stack: ["Proxmox", "LXC", "Docker", "Tailscale", "Caddy"]
-publishDate: "2026-01-01"
+publishDate: "2025-11-01"
 draft: false
 ---
 
 An N100 Intel mini PC from Acemagic running Proxmox, and most of the software I use at home runs on it.
 
-I started it because I wanted to own my own software. That was basically the whole reason, and it seemed like a fun thing to build too.
+I started it in November 2025 because I wanted to own my own software. That was basically the whole reason, and it seemed like a fun thing to build too. It ran on a Raspberry Pi 4B at first and moved onto the mini PC in January.
 
 The 2 things I actually wanted were Immich and Jellyfin. I had a huge amount of physical media at home and no good way to play any of it. The photos were the same problem in a different shape, floating around across phones and drives and whatever account I happened to be signed into. Both of those are consolidation jobs. Immich is holding about 13,000 photos now and Jellyfin plays the media.
 
