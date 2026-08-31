@@ -12,7 +12,7 @@ The first one is called tape. Day trading has felt like an impenetrable fortress
 
 AI is super good at compiling information and helping you make decisions, and from the outside that's most of what trading looks like. So I figured why not hook up an API and build myself a harness to learn inside of. That sounded like a way more exciting way to learn than reading about it, and if it actually works then hey, maybe I make some money out of it too.
 
-Before I built anything I got Claude to go dig up what the research actually says. It came back grim, and it also killed the idea I walked in with, which was basically that an AI could tell me where things were heading. Turns out the papers that say it can are short backtests on a handful of tech stocks the model had already read the news about, and when people redo those properly across a couple decades the edge just disappears.
+Before I built anything I got Claude to go dig up what the research actually says. It came back grim. Every trade on the Taiwan Stock Exchange over 14 years, 19,646 new Brazilian futures traders followed session by session, and under 1% were predictably profitable. It also killed the idea I walked in with, which was basically that an AI could tell me where things were heading. Turns out the papers that say it can are short backtests on a handful of tech stocks the model had already read the news about, and when people redo those properly across a couple decades the edge just disappears.
 
 So tape doesn't predict anything. It reads rules I wrote down in a markdown file, applies them to today, tells me which rule it used, and proposes a trade with a stop and a size already attached to it. I take it or I pass on it. Everything goes into a journal including the passes, and every night the whole thing gets scored against what actually happened. The limits on how much I'm allowed to risk live in the Go code and not in the prompt, because a model can talk itself out of a prompt. Alpaca hands you a hundred grand of paper money, which tells me nothing about how I'd behave with an account I could really afford, so the ledger starts at five thousand and the broker's number gets ignored too.
 
@@ -38,41 +38,9 @@ The big one is do not skimp on the planning. At all. Give it a real vision, hand
 
 But the thing that's actually changed how I work is that I stopped writing the rules myself. On most of these projects I don't know the architecture well enough to write them, I'm starting from scratch on something I've never built before. What I do have is a really good vision for what I want. So I write that part, and then I get Claude to write its own CLAUDE.md off of it, and that file is what holds everything in check for the rest of the project. It's been working super well.
 
-Here's the whole thing it wrote for Daily Games:
+Here's the hard rules section from the one it wrote for Daily Games. The whole file is [in the repo](https://github.com/trapp01/Daily-Games/blob/main/CLAUDE.md):
 
 ```md title="daily-games/CLAUDE.md"
-# Daily Games
-
-A shared engine for 5-minute daily games (NYT Games model). The engine owns everything generic;
-each game is one folder under `games/` implementing the `GameModule` contract; daily content is
-static per-date JSON produced by offline pipelines. The success bar for this repo: an agent team
-can one-shot a complete new game from a one-paragraph spec.
-
-## Commands
-
-- `pnpm ladder` — format check + typecheck + all tests + build. Must pass before any work is
-  called done.
-- `pnpm format` / `pnpm typecheck` / `pnpm test` / `pnpm build` — the ladder's individual rungs.
-- `pnpm dev` — run the shell at http://localhost:5173 (or the next free port — read the output).
-- `pnpm new-game <slug>` — scaffold a game: typed stubs, failing conformance test, registry entry.
-- `pnpm content:build` — validate `games/*/content/staging/*.json` against each game's schema and
-  publish to `app/public/puzzles/<id>/<date>.json`, mirroring `content/assets/` into the same
-  folder. Dates past tomorrow are held back, as are assets whose filename opens with such a date
-  (`--all` publishes everything for local preview); `staging/` is the source of truth, not
-  `public/`.
-
-## Layout
-
-- `packages/engine` — the platform: daily clock/puzzle numbers, seeded RNG, versioned storage,
-  action-log persistence + replay, streaks/stats, share lines, content loading, `useDailyGame`.
-- `packages/kit` — design tokens (`tokens.css`) and the component/motion kit games build screens from.
-- `packages/conformance` — `describeGameConformance(module, fixtures)`: the parametrized suite
-  every game must pass.
-- `games/<slug>` — one vertical slice per game: manifest, zod content schema, pure reducer,
-  Screen built from kit parts, probe, tests, `content/staging/*.json`.
-- `app` — the shell: home, routing, results, settings. Registry in `app/src/registry.ts`.
-- `tools` — scaffolder and content pipeline. Plain tsx scripts.
-
 ## Hard rules
 
 - Games NEVER touch localStorage, dates, `Math.random`, `fetch`, or share APIs — that is engine
@@ -87,12 +55,6 @@ can one-shot a complete new game from a one-paragraph spec.
 - TypeScript strict; no `any`, no `@ts-ignore`. One sanctioned exception: `AnyGameModule` in the
   contract erases game type parameters for the registry. Files stay under 300 lines.
 - Never commit; Matthew reviews diffs and asks for commits himself.
-
-## Building a game
-
-Read `games/CLAUDE.md` and copy the patterns of the golden game(s) already in `games/` — they are
-the reference implementation of every convention. Scaffold with `pnpm new-game <slug>`, then make
-the failing conformance test pass, then build the Screen, then run `pnpm ladder`.
 ```
 
 I didn't come up with any of that. I told it what the site was and what I wanted building a game to feel like, and it worked backwards into the rules that would make that true. The only line in there that's mine is the one about never committing. Everything else is the model working out what it shouldn't be trusted with, then writing it down so the next session is held to it.
@@ -101,7 +63,7 @@ Same deal with the planning documents. Tape's design doc is mostly Claude workin
 
 > If a prompt contains the words "you may override", it is wrong.
 
-Management matters way more than it used to. I've got a Fable agent supervising Opus subagents working in parallel and validating what they hand back. But it only works because there's something real for the validating to happen against. That's the same idea again. The tests aren't there to make the numbers look good, they're there so somebody who wasn't watching can still tell the difference between working and looking like it works.
+Management matters way more than it used to. On both projects I've got a Fable agent supervising Opus subagents working in parallel. The plan is already cut into chunks, so each subagent gets one chunk and the packages it's allowed to touch, and the rest are in flight at the same time. The contracts between the packages are frozen, and a subagent that needs to change one has to stop and say so instead of editing it. When a chunk comes back it has to have passed the full lint and test run, and the subagent has to say what it verified and what it couldn't. The supervisor checks all of that before I ever see the diff, and nothing gets committed until I've read it too. But it only works because there's something real for the validating to happen against. That's the same idea again. The tests aren't there to make the numbers look good, they're there so somebody who wasn't watching can still tell the difference between working and looking like it works.
 
 And taste matters more than ever. You need a strong grasp on your influences or you've got nothing to steer with.
 

@@ -10,8 +10,6 @@ draft: false
 
 A shared engine for 5 minute daily puzzle games, the NYT Games shape. One platform owns the calendar, the saving, the streaks, the stats and the share grid. A game is a folder that implements a small typed contract, and that's it.
 
-::github{repo="trapp01/Daily-Games"}
-
 I built it that way because the hard parts of a daily game aren't the puzzles. They're things like which day it is for someone 2 timezones over at 11:58pm during a DST shift, or whether you get your board back when you refresh halfway through, or whether playing the same day twice double counts your streak, or whether the share grid quietly leaks the answer. Solve those once per game and you end up writing the same 5 bugs 5 times. So the engine answers all of them and a game doesn't get a vote.
 
 The engineering model came from Capcom's RE Engine. They consolidated onto one in-house engine and then shipped survival horror, character action, fighting and monster hunting on top of it, faster and more consistently than they had before. The engine is where the leverage is. This is that at hobby scale, and the bet is that adding the 10th game costs about what adding the 2nd did.
