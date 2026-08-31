@@ -79,6 +79,23 @@ const media = defineCollection({
 		}),
 });
 
+const project = defineCollection({
+	loader: glob({ base: "./src/content/project", pattern: "**/*.{md,mdx}" }),
+	schema: baseSchema.extend({
+		description: z.string(), // one line, shows on the index and the home list
+		status: z.enum(["building", "shipped", "ongoing"]).default("building"),
+		repo: z.url().optional(),
+		link: z.url().optional(), // live site, if there is one
+		stack: z.array(z.string()).default([]), // display only, not the site's tag system
+		// when I started it. Sort key only, never rendered.
+		publishDate: z
+			.string()
+			.or(z.date())
+			.transform((val) => new Date(val)),
+		draft: z.boolean().default(false),
+	}),
+});
+
 const tag = defineCollection({
 	loader: glob({ base: "./src/content/tag", pattern: "**/*.{md,mdx}" }),
 	schema: z.object({
@@ -87,4 +104,4 @@ const tag = defineCollection({
 	}),
 });
 
-export const collections = { post, note, tag, media };
+export const collections = { post, note, tag, media, project };

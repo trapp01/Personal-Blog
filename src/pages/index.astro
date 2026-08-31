@@ -2,20 +2,25 @@
 import type { CollectionEntry } from "astro:content";
 import PostPreview from "@/components/blog/PostPreview.astro";
 import MediaPreview from "@/components/media/MediaPreview.astro";
+import ProjectPreview from "@/components/project/ProjectPreview.astro";
 // import Note from "@/components/note/Note.astro"; // notes disabled — see note below
 import { getAllMedia } from "@/data/media";
 import { getAllPosts } from "@/data/post";
+import { getAllProjects } from "@/data/project";
 import PageLayout from "@/layouts/Base.astro";
 import { collectionDateSort } from "@/utils/date";
 
 // Home teases the most recent of each; the section headings link to the full archives.
 // Reviews list as text here — the poster grid lives on /reviews/.
 const MAX_POSTS = 5;
+const MAX_PROJECTS = 5;
 const MAX_REVIEWS = 5;
 
 const latestPosts = (await getAllPosts())
 	.sort(collectionDateSort)
 	.slice(0, MAX_POSTS) as CollectionEntry<"post">[];
+
+const latestProjects = (await getAllProjects()).sort(collectionDateSort).slice(0, MAX_PROJECTS);
 
 const latestReviews = (await getAllMedia()).sort(collectionDateSort).slice(0, MAX_REVIEWS);
 
@@ -45,6 +50,24 @@ const latestReviews = (await getAllMedia()).sort(collectionDateSort).slice(0, MA
 			}
 		</ul>
 	</section>
+	{
+		latestProjects.length > 0 && (
+			<section aria-labelledby="projects-heading" class="mt-16">
+				<h2 class="title" id="projects-heading">
+					<a class="hover:text-link" href="/projects/">
+						Projects →
+					</a>
+				</h2>
+				<ul class="mt-5 space-y-4 text-start">
+					{latestProjects.map((item) => (
+						<li class="grid gap-1 sm:grid-cols-[auto_1fr]">
+							<ProjectPreview item={item} />
+						</li>
+					))}
+				</ul>
+			</section>
+		)
+	}
 	{
 		latestReviews.length > 0 && (
 			<section aria-labelledby="reviews-heading" class="mt-16">

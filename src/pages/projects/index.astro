@@ -1,0 +1,51 @@
+---
+import { getAllProjects, PROJECT_STATUS } from "@/data/project";
+import PageLayout from "@/layouts/Base.astro";
+import { collectionDateSort } from "@/utils/date";
+
+const projects = (await getAllProjects()).sort(collectionDateSort);
+
+const meta = {
+	description: "Things I've built, and where each one actually stands.",
+	title: "Projects",
+};
+---
+
+<PageLayout meta={meta}>
+	<h1 class="title mb-10">Projects</h1>
+
+	{
+		projects.length === 0 ? (
+			<p class="text-muted">Nothing here yet.</p>
+		) : (
+			<ul class="space-y-10">
+				{projects.map((item) => (
+					<li>
+						<div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+							<a class="cactus-link title" href={`/projects/${item.id}/`}>
+								{item.data.title}
+							</a>
+							<span class="text-muted text-xs font-semibold tracking-wide uppercase">
+								{PROJECT_STATUS[item.data.status]}
+							</span>
+						</div>
+						<p class="mt-2">{item.data.description}</p>
+						<div class="text-muted mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs">
+							{item.data.stack.length > 0 && <span>{item.data.stack.join(" · ")}</span>}
+							{item.data.repo && (
+								<a class="cactus-link" href={item.data.repo} rel="noreferrer" target="_blank">
+									GitHub ↗
+								</a>
+							)}
+							{item.data.link && (
+								<a class="cactus-link" href={item.data.link} rel="noreferrer" target="_blank">
+									Live ↗
+								</a>
+							)}
+						</div>
+					</li>
+				))}
+			</ul>
+		)
+	}
+</PageLayout>

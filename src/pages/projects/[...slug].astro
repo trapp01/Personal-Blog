@@ -1,0 +1,54 @@
+---
+import { render } from "astro:content";
+import type { GetStaticPaths, InferGetStaticPropsType } from "astro";
+import { getAllProjects, PROJECT_STATUS } from "@/data/project";
+import PageLayout from "@/layouts/Base.astro";
+
+export const getStaticPaths = (async () => {
+	const projects = await getAllProjects();
+	return projects.map((item) => ({
+		params: { slug: item.id },
+		props: { item },
+	}));
+}) satisfies GetStaticPaths;
+
+type Props = InferGetStaticPropsType<typeof getStaticPaths>;
+
+const { item } = Astro.props;
+const { Content } = await render(item);
+const { description, link, repo, stack, status, title } = item.data;
+
+const meta = { description, title };
+---
+
+<PageLayout meta={meta}>
+	<article class="grow break-words" data-pagefind-body>
+		<h1 class="title">{title}</h1>
+		<p class="text-muted mt-1 text-lg">{description}</p>
+		<div class="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1">
+			<span class="text-muted text-xs font-semibold tracking-wide uppercase">
+				{PROJECT_STATUS[status]}
+			</span>
+			{stack.length > 0 && <span class="text-muted text-xs">{stack.join(" · ")}</span>}
+		</div>
+		{
+			(repo || link) && (
+				<p class="mt-6 flex flex-wrap gap-x-6">
+					{repo && (
+						<a class="cactus-link" href={repo} rel="noreferrer" target="_blank">
+							GitHub →
+						</a>
+					)}
+					{link && (
+						<a class="cactus-link" href={link} rel="noreferrer" target="_blank">
+							Live site →
+						</a>
+					)}
+				</p>
+			)
+		}
+		<div class="prose prose-sm prose-cactus mt-8 max-w-none">
+			<Content />
+		</div>
+	</article>
+</PageLayout>

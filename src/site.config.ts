@@ -5,7 +5,7 @@ export const siteConfig: SiteConfig = {
 	url: "https://matt-trapp.com",
 	title: "Matt Trapp",
 	author: "Matthew Trapp",
-	description: "The personal site of Matt Trapp: writing and reviews.",
+	description: "The personal site of Matt Trapp: writing, projects and reviews.",
 	lang: "en-US",
 	ogLocale: "en_US",
 	date: {
@@ -37,6 +37,10 @@ export const menuLinks: { path: string; title: string }[] = [
 	// 	path: "/notes/",
 	// 	title: "Notes",
 	// },
+	{
+		path: "/projects/",
+		title: "Projects",
+	},
 	{
 		path: "/reviews/",
 		title: "Reviews",

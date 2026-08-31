@@ -1,0 +1,17 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { PROJECT_STATUS } from "@/data/project";
+
+interface Props {
+	item: CollectionEntry<"project">;
+}
+
+const { item } = Astro.props;
+const { status, title } = item.data;
+---
+
+{/* Two grid children, matching PostPreview, so both home lists share one column. */}
+<span class="text-muted min-w-30 font-semibold">{PROJECT_STATUS[status]}</span>
+<div class="flex flex-wrap items-center gap-x-2">
+	<a class="cactus-link" href={`/projects/${item.id}/`}>{title}</a>
+</div>
